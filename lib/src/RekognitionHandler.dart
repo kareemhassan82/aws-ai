@@ -58,12 +58,17 @@ class RekognitionHandler {
       HttpClient httpClient = new HttpClient();
       HttpClientRequest request = await httpClient.postUrl(Uri.parse(endpoint));
 
-      request.headers.set('content-length', headerParamters['content-length']);
-      request.headers.set('content-type', headerParamters['content-type']);
-      request.headers.set('host', headerParamters['host']);
-      request.headers.set('x-amz-date', headerParamters['x-amz-date']);
-      request.headers.set('x-amz-target', headerParamters['x-amz-target']);
-      request.headers.set('Authorization', headerParamters['Authorization']);
+      request.headers
+          .set('content-length', headerParamters['content-length'].toString());
+      request.headers
+          .set('content-type', headerParamters['content-type'].toString());
+      request.headers.set('host', headerParamters['host'].toString());
+      request.headers
+          .set('x-amz-date', headerParamters['x-amz-date'].toString());
+      request.headers
+          .set('x-amz-target', headerParamters['x-amz-target'].toString());
+      request.headers
+          .set('Authorization', headerParamters['Authorization'].toString());
 
       request.write(body);
 
@@ -77,6 +82,77 @@ class RekognitionHandler {
     }
 
     return Future.value(builder.toString());
+  }
+
+  Future<String> listFaces(String collectionId) async {
+    try {
+      String body = '{"CollectionId":"$collectionId"}';
+      String amzTarget = "RekognitionService.ListFaces";
+
+      String response = await _rekognitionHttp(amzTarget, body);
+      return response;
+    } catch (e) {
+      print(e);
+      return "{}";
+    }
+  }
+
+  Future<String> searchFaceByImage(
+      sourceImageBytes, String collectionId) async {
+    try {
+      String base64SourceImage = base64Encode(sourceImageBytes);
+      String body = '{"CollectionId":"$collectionId",'
+          '"Image":{"Bytes": "$base64SourceImage"}, "MaxFaces": 1}';
+      String amzTarget = "RekognitionService.SearchFacesByImage";
+
+      String response = await _rekognitionHttp(amzTarget, body);
+      return response;
+    } catch (e) {
+      print(e);
+      return "{}";
+    }
+  }
+
+  Future<String> indexFaces(File image, String collectionId) async {
+    try {
+      List<int> sourceImageBytes = image.readAsBytesSync();
+      String base64SourceImage = base64Encode(sourceImageBytes);
+      String body = '{"CollectionId":"$collectionId",'
+          '"Image":{"Bytes": "$base64SourceImage"}}';
+      String amzTarget = "RekognitionService.IndexFaces";
+
+      String response = await _rekognitionHttp(amzTarget, body);
+      return response;
+    } catch (e) {
+      print(e);
+      return "{}";
+    }
+  }
+
+  Future<String> createCollection(String collectionId) async {
+    try {
+      String body = '{"CollectionId":"$collectionId"}';
+      String amzTarget = "RekognitionService.CreateCollection";
+
+      String response = await _rekognitionHttp(amzTarget, body);
+      return response;
+    } catch (e) {
+      print(e);
+      return "{}";
+    }
+  }
+
+  Future<String> deleteCollection(String collectionId) async {
+    try {
+      String body = '{"CollectionId":"$collectionId"}';
+      String amzTarget = "RekognitionService.DeleteCollection";
+
+      String response = await _rekognitionHttp(amzTarget, body);
+      return response;
+    } catch (e) {
+      print(e);
+      return "{}";
+    }
   }
 
   Future<String> compareFaces(
