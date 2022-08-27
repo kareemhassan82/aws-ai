@@ -20,7 +20,7 @@ class RekognitionHandler {
     var now = new DateTime.now().toUtc();
     var amzFormatter = new DateFormat("yyyyMMdd'T'HHmmss'Z'");
     String amzDate =
-    amzFormatter.format(now); // format should be '20170104T233405Z"
+        amzFormatter.format(now); // format should be '20170104T233405Z"
 
     var dateFormatter = new DateFormat('yyyyMMdd');
     String dateStamp = dateFormatter.format(
@@ -58,12 +58,17 @@ class RekognitionHandler {
       HttpClient httpClient = new HttpClient();
       HttpClientRequest request = await httpClient.postUrl(Uri.parse(endpoint));
 
-      request.headers.set('content-length', headerParamters['content-length']);
-      request.headers.set('content-type', headerParamters['content-type']);
-      request.headers.set('host', headerParamters['host']);
-      request.headers.set('x-amz-date', headerParamters['x-amz-date']);
-      request.headers.set('x-amz-target', headerParamters['x-amz-target']);
-      request.headers.set('Authorization', headerParamters['Authorization']);
+      request.headers
+          .set('content-length', headerParamters['content-length'].toString());
+      request.headers
+          .set('content-type', headerParamters['content-type'].toString());
+      request.headers.set('host', headerParamters['host'].toString());
+      request.headers
+          .set('x-amz-date', headerParamters['x-amz-date'].toString());
+      request.headers
+          .set('x-amz-target', headerParamters['x-amz-target'].toString());
+      request.headers
+          .set('Authorization', headerParamters['Authorization'].toString());
 
       request.write(body);
 
@@ -108,8 +113,7 @@ class RekognitionHandler {
     }
   }
 
-  Future<String> indexFaces(
-      File image, String collectionId) async {
+  Future<String> indexFaces(File image, String collectionId) async {
     try {
       List<int> sourceImageBytes = image.readAsBytesSync();
       String base64SourceImage = base64Encode(sourceImageBytes);
@@ -125,11 +129,9 @@ class RekognitionHandler {
     }
   }
 
-  Future<String> createCollection(
-      String collectionId) async {
+  Future<String> createCollection(String collectionId) async {
     try {
-      String body =
-          '{"CollectionId":"$collectionId"}';
+      String body = '{"CollectionId":"$collectionId"}';
       String amzTarget = "RekognitionService.CreateCollection";
 
       String response = await _rekognitionHttp(amzTarget, body);
@@ -140,11 +142,9 @@ class RekognitionHandler {
     }
   }
 
-  Future<String> deleteCollection(
-      String collectionId) async {
+  Future<String> deleteCollection(String collectionId) async {
     try {
-      String body =
-          '{"CollectionId":"$collectionId"}';
+      String body = '{"CollectionId":"$collectionId"}';
       String amzTarget = "RekognitionService.DeleteCollection";
 
       String response = await _rekognitionHttp(amzTarget, body);
